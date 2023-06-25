@@ -1,0 +1,11 @@
+your_profile_name: patrojun6040
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: 34.89.230.185
+      port: 5432
+      user: patrojun6040
+      password: hGXPjHAjO6
+      dbname: d2b_accessment
+      schema: patrojun6040_analytics
