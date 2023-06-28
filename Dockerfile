@@ -4,4 +4,4 @@ COPY ./requirements.txt /tmp
 RUN pip3 install -r /tmp/requirements.txt
 WORKDIR ./carepay_etl
 ENTRYPOINT "python3"
-CMD ["main.py --mode default"]
+CMD ["main.py"]

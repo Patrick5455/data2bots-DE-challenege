@@ -29,8 +29,7 @@ def download_from_s3(bucket_name: str,
 
 
 def load_csv_files_to_postgres(file_names: list[str],
-                               parent_path: str
-                               ):
+                               parent_path: str):
     try:
         conn = connect_to_postgres()
         cur = conn.cursor()
