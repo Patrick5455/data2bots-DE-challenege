@@ -2,15 +2,22 @@ import psycopg2
 from psycopg2._psycopg import connection
 from constants import *
 import yaml
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class S3Config:
-    def __init__(self, s3_config_dict: dict):
-        self._s3_bucket_name = s3_config_dict["BUCKET_NAME"]
-        self._prefix = s3_config_dict["PREFIX"]
-        self._file_list = s3_config_dict["FILE_LIST"]
-        self._download_path = s3_config_dict["DOWNLOAD_PATH"]
-        self._s3_region = s3_config_dict["S3_REGION"]
+    def __init__(self, s3_config_dict: dict = None):
+        if s3_config_dict is None or len(s3_config_dict) == 0:
+            raise Exception("s3 configs map passed is none or empty")
+        s3_configs = s3_config_dict.get('S3_CONFIG')
+        self._s3_bucket_name = s3_configs.get('BUCKET_NAME')
+        self._prefix = s3_config_dict['S3_CONFIG']['PREFIX']
+        self._file_list = s3_config_dict['S3_CONFIG']['FILE_LIST']
+        self._download_path = s3_config_dict['S3_CONFIG']['DOWNLOAD_PATH']
+        self._s3_region = s3_config_dict['S3_CONFIG']['S3_REGION']
 
     @property
     def s3_bucket_name(self):
@@ -54,13 +61,15 @@ class S3Config:
 
 
 class DBConfig:
-    def __init__(self, config_dict):
-        self._db_host = config_dict.get('DB_HOST')
-        self._db_port = config_dict.get('DB_PORT')
-        self._db_name = config_dict.get('DB_NAME')
-        self._db_schemas = config_dict.get('DB_SCHEMAS')
-        self._db_user = config_dict.get('DB_USER')
-        self._db_password = config_dict.get('DB_PASSWORD')
+    def __init__(self, db_config_dict):
+        if db_config_dict is None or len(db_config_dict) == 0:
+            raise Exception("DB configs map passed is none or empty")
+        self._db_host = db_config_dict.get('DB_HOST')
+        self._db_port = db_config_dict.get('DB_PORT')
+        self._db_name = db_config_dict.get('DB_NAME')
+        self._db_schemas = db_config_dict.get('DB_SCHEMAS')
+        self._db_user = db_config_dict.get('DB_USER')
+        self._db_password = db_config_dict.get('DB_PASSWORD')
 
     @property
     def db_host(self):
@@ -114,16 +123,32 @@ class DBConfig:
 def yaml_configs_loader(config_file: str) -> dict:
     with open(config_file, "r") as file:
         config_dict = yaml.safe_load(file)
+    print("successfully loaded yaml configs file into a map")
     return config_dict
 
 
-def connect_to_postgres() -> connection:
+def load_db_configs_in_dict() -> dict:
+    config_dict = {
+        'DB_HOST': os.getenv('DB_HOST'),
+        'DB_PORT': os.getenv('DB_PORT'),
+        'DB_NAME': os.getenv('DB_NAME'),
+        'DB_SCHEMAS': os.getenv('DB_SCHEMAS').split(','),
+        'DB_USER': os.getenv('DB_USER'),
+        'DB_PASSWORD': os.getenv('DB_PASSWORD')
+    }
+    print("successfully loaded db configs into a map")
+    return config_dict
+
+
+def connect_to_postgres(db_config: DBConfig) -> connection:
     try:
-        data2bots_db_connection = psycopg2.connect(host=DB_HOST, port=DB_PORT,
-                                                   database=DB_NAME, user=DB_USER,
-                                                   password=DB_PASSWORD)
+        data2bots_db_connection = psycopg2.connect(host=db_config.db_host,
+                                                   port=db_config.db_port,
+                                                   database=db_config.db_name,
+                                                   user=db_config.db_user,
+                                                   password=db_config.db_password)
         print('connected to DB successfully')
         return data2bots_db_connection
     except Exception as db_error:
         print(f"something went wrong while trying to connect with "
-              f"{DB_NAME} DB", str(db_error))
+              f"{db_config.db_name} DB", str(db_error))

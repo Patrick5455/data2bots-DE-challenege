@@ -1,8 +1,9 @@
-S3_CONFIGS:
+S3_CONFIG:
   BUCKET_NAME: 'd2b-internal-assessment-bucket'
   PREFIX: 'orders_data'
   FILE_LIST:
     - 'shipment_deliveries.csv'
-    - "reviews.csv", "orders.csv"
+    - "reviews.csv"
+    - "orders.csv"
   DOWNLOAD_PATH: '../csv_data'
   S3_REGION: 'eu-central-1'
