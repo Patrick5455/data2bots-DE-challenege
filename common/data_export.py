@@ -6,6 +6,19 @@ from botocore.client import Config
 from utils import *
 
 
+class ExtractAndLoad:
+    """
+        This class downloads data from a public s3 bucket and loads to a postgres DB
+    """
+
+    def __init__(self,
+                 db_connection: connection,
+                 s3_config: S3Config,
+                 db_configs: DBConfig
+                 ):
+        pass
+
+
 def download_from_s3(bucket_name: str,
                      directory_prefix: str,
                      s3_keys: list[str],
@@ -28,11 +41,19 @@ def download_from_s3(bucket_name: str,
         print(f"Error while exporting data from s3: {e}")
 
 
+def create_schemas(schema_names: list[str],
+                   db_connection: connection):
+    cur = db_connection.cursor()
+    for schema_name in schema_names:
+        cur.execute(f"CREATE SCHEMA IF NOT EXISTS {schema_name}")
+    db_connection.close()
+
+
 def load_csv_files_to_postgres(file_names: list[str],
-                               parent_path: str):
+                               parent_path: str,
+                               db_connection: connection):
     try:
-        conn = connect_to_postgres()
-        cur = conn.cursor()
+        cur = db_connection.cursor()
         for file_name in file_names:
             table_name = file_name.split('.')[0]
             fully_qualified_file_name = f"{parent_path}/{file_name}"
@@ -40,14 +61,15 @@ def load_csv_files_to_postgres(file_names: list[str],
             with open(fully_qualified_file_name, 'r') as f:
                 next(f)
                 cur.copy_from(f, table_name, sep=',')
-        conn.commit()
+        db_connection.commit()
         cur.close()
-        conn.close()
+        db_connection.close()
 
     except Exception as e:
         print(f"Error while loading data to postgres: {e}")
 
 
 if __name__ == '__main__':
-    download_from_s3(S3_BUCKET_NAME, PREFIX, FILE_LIST, DOWNLOAD_PATH)
-    load_csv_files_to_postgres(FILE_LIST, f"{DOWNLOAD_PATH}/{PREFIX}")
+    download_from_s3(BUCKET_NAME, PREFIX, FILE_LIST, DOWNLOAD_PATH)
+    load_csv_files_to_postgres(FILE_LIST, f"{DOWNLOAD_PATH}/{PREFIX}",
+                               connect_to_postgres())

@@ -1,6 +1,9 @@
 -- Create or replace the table for aggregated public holiday orders
 {% set schema_name = 'patrojun6040_analytics' %}
 
+{{ create_schema_if_not_exists(schema_name) }}
+
+
 CREATE TABLE IF NOT EXISTS {{ schema_name }}.agg_public_holiday (
                                                                     ingestion_date DATE NOT NULL,
                                                                     tt_order_hol_jan INT NOT NULL,
