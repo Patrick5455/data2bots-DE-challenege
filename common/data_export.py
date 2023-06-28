@@ -3,21 +3,7 @@ import os
 import boto3
 from botocore import UNSIGNED
 from botocore.client import Config
-import psycopg2
-
-# AWS S3 Configs
-S3_BUCKET_NAME = "d2b-internal-assessment-bucket"
-PREFIX = "orders_data"
-FILE_LIST = ["orders.csv", "reviews.csv", "shipment_deliveries.csv"]
-DOWNLOAD_PATH = "../csv_data"
-SE_REGION = "eu-central-1"
-
-# PostgreSQL credentials
-DB_HOST = '34.89.230.185'
-DB_PORT = '5432'
-DB_NAME = 'd2b_accessment'
-DB_USER = 'patrojun6040'
-DB_PASSWORD = 'hGXPjHAjO6'
+from utils import *
 
 
 def download_from_s3(bucket_name: str,
@@ -25,7 +11,7 @@ def download_from_s3(bucket_name: str,
                      s3_keys: list[str],
                      download_path: str):
     s3 = boto3.client('s3',
-                      region_name=SE_REGION,
+                      region_name=S3_REGION,
                       config=Config(signature_version=UNSIGNED))
     try:
         response = s3.list_objects(Bucket=bucket_name, Prefix=directory_prefix)
@@ -45,18 +31,8 @@ def download_from_s3(bucket_name: str,
 def load_csv_files_to_postgres(file_names: list[str],
                                parent_path: str
                                ):
-
     try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            port=DB_PORT,
-            database=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD
-        )
-
-        print('connected to DB successfully')
-
+        conn = connect_to_postgres()
         cur = conn.cursor()
         for file_name in file_names:
             table_name = file_name.split('.')[0]
@@ -70,7 +46,6 @@ def load_csv_files_to_postgres(file_names: list[str],
         conn.close()
 
     except Exception as e:
-        print(e)
         print(f"Error while loading data to postgres: {e}")
 
 
