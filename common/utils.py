@@ -11,5 +11,6 @@ def connect_to_postgres() -> connection:
         print('connected to DB successfully')
         return data2bots_db_connection
     except Exception as db_error:
-        print(f"something went wrong while trying to  connect with {DB_NAME} DB", str(db_error))
+        print(f"something went wrong while trying to connect with "
+              f"{DB_NAME} DB", str(db_error))
 
