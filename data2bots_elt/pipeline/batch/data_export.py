@@ -2,8 +2,8 @@ import boto3
 from botocore import UNSIGNED
 from botocore.client import Config
 
-from ddl import crate_staging_tables
-from utils import *
+from common.ddl import crate_staging_tables
+from common.utils import *
 
 
 class ExtractAndLoad:

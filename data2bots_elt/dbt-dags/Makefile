@@ -1,4 +1,4 @@
-.PHONY: build, run, run-marts, test, compile, acc-run, acc-test, lint, fix, local-dev, venv, requirements, precommit-install, refresh
+.PHONY: all, docker-build, docker-push, build, run, run-analytics, clean, deps, test, compile, refresh
 
 #################################################################################
 # GLOBALS                                                                       #
@@ -26,7 +26,7 @@ all: docker-build run
 docker-build:
 	docker build --no-cache -t $(IMAGE) .
 
-push:
+docker-push:
 	docker push $(IMAGE)
 
 build: refresh
@@ -35,11 +35,8 @@ build: refresh
 run: refresh
 	docker run $(VOLUMES) $(ENVS) $(IMAGE) run $(PROFILES)
 
-run-staging: refresh
-	docker run $(VOLUMES) $(ENVS) $(IMAGE) run $(PROFILES) --model staging.*
-
-run-analysis: refresh
-	docker run $(VOLUMES) $(ENVS) $(IMAGE) run $(PROFILES) --model analyis.*
+run-analytics: refresh
+	docker run $(VOLUMES) $(ENVS) $(IMAGE) run $(PROFILES) --model analytics.*
 
 clean: refresh
 	docker run $(VOLUMES) $(ENVS) $(IMAGE) clean $(PROFILES)
