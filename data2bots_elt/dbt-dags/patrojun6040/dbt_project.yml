@@ -23,5 +23,3 @@ models:
     materialized: table
     analytics:
       schema:  patrojun6040_analytics
-    staging:
-      schema: patrojun6040_staging

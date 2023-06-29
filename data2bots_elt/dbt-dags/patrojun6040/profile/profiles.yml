@@ -4,8 +4,10 @@ postgres-dwh:
     dev:
       type: postgres
       host: 34.89.230.185
-      user: patrojun6040
-      password: hGXPjHAjO6
+      user: "{{ env_var('DB_USER') }}"
+      password: "{{ env_var('DB_PASSWORD') }}"
       port: 5432
-      dbname: d2b_accessment
+      dbname: "{{ env_var('DB_NAME') }}"
       schema: patrojun6040_analytics
+      threads: 3
+      keepalives_idle: 0
