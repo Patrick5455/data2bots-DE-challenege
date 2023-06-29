@@ -1,11 +1,9 @@
-import csv
-
 import boto3
 from botocore import UNSIGNED
 from botocore.client import Config
 
-from utils import *
 from ddl import crate_staging_tables
+from utils import *
 
 
 class ExtractAndLoad:
@@ -26,7 +24,7 @@ class ExtractAndLoad:
         self.__s3_config = s3_config
         self.__db_config = db_config
 
-    def _download_from_s3(self):
+    def extract_from_datalake(self):
         try:
             s3 = boto3.client('s3',
                               region_name=self.__s3_config.s3_region,
@@ -50,24 +48,23 @@ class ExtractAndLoad:
                                          download_file_location)
 
         except Exception as e:
-            print(f"Error while exporting data from s3: {e}")
+            print(f"error while exporting data from datalake: {e}")
 
-    def _create_staging_tables_and_load_data_from_csv(self, csv_files_location):
-        cursor = self.__db_connection.cursor()
-        schema_name = self.__db_config.db_schema
-        csv_files = [f for f in os.listdir(csv_files_location) if f.endswith('.csv')]
-        for file in csv_files:
-            table_name = os.path.splitext(file)[0]  # Use the file name as the table name
-            file_path = os.path.join(csv_files_location, file)
-            with open(file_path, 'r') as csv_file:
-                csv_reader = csv.reader(csv_file)
-                header = next(csv_reader)  # remove header row from input reader object
+    def _create_staging_tables_in_warehouse(self):
+        try:
+            cursor = self.__db_connection.cursor()
+            schema_name = self.__db_config.db_schema
+            for file in self.__s3_config.file_list:
+                table_name = file.split()[0]
                 print(f"creating table {schema_name}.{table_name} ")
                 cursor.execute(crate_staging_tables(schema_name=schema_name,
                                                     table_name=table_name))
                 self.__db_connection.commit()
+        except Exception as e:
+            self.__db_connection.close()
+            print(f"error while creating staging tables in warehouse: {e}")
 
-    def _load_csv_files_to_postgres(self):
+    def _load_staging_data_to_warehouse(self):
         try:
             cur = self.__db_connection.cursor()
             parent_path = f"{self.__s3_config.download_path}/{self.__s3_config.prefix}"
@@ -80,30 +77,27 @@ class ExtractAndLoad:
                 copy_sql = f"COPY {table_name} FROM STDIN DELIMITER ',' CSV HEADER"
                 cur.execute(truncate_sql)
                 with open(fully_qualified_file_name, 'r') as f:
-                    next(f)
                     cur.copy_expert(sql=copy_sql, file=f)
-
+                print(f"data for table {table_name} load successfully")
             self.__db_connection.commit()
+            print("all data loaded successfully")
             cur.close()
         except Exception as e:
             self.__db_connection.close()
-            print(f"Error while loading data to postgres: {e}")
+            print(f"error while loading staging data to warehouse: {e}")
 
-    def export_data(self):
-        self._download_from_s3()
-        self._create_staging_tables_and_load_data_from_csv(
-            f"{self.__s3_config.download_path}/{self.__s3_config.prefix}")
-        self._load_csv_files_to_postgres()
+    def export_and_load_job(self):
+        self.extract_from_datalake()
+        self._create_staging_tables_in_warehouse()
+        self._load_staging_data_to_warehouse()
         self.__db_connection.close()
 
 
 if __name__ == '__main__':
-    s3_config = S3Config(yaml_configs_loader("../configs.yaml"))
-    db_config = DBConfig(load_db_configs_in_dict())
+    s3_config_obj = S3Config(yaml_configs_loader("../configs.yaml"))
+    db_config_obj = DBConfig(load_db_configs_in_dict())
     extract_and_load = ExtractAndLoad(
-        s3_config=s3_config,
-        db_config=db_config,
-        db_connection=connect_to_postgres(db_config)
-    )
-
-    extract_and_load.export_data()
+        s3_config=s3_config_obj,
+        db_config=db_config_obj,
+        db_connection=connect_to_postgres(db_config_obj))
+    extract_and_load.export_and_load_job()
