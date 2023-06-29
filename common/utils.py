@@ -1,6 +1,5 @@
 import psycopg2
 from psycopg2._psycopg import connection
-from constants import *
 import yaml
 import os
 from dotenv import load_dotenv
@@ -12,6 +11,8 @@ class S3Config:
     def __init__(self, s3_config_dict: dict = None):
         if s3_config_dict is None or len(s3_config_dict) == 0:
             raise Exception("s3 configs map passed is none or empty")
+        else:
+            print("S3 configs map successfully loaded")
         s3_configs = s3_config_dict.get('S3_CONFIG')
         self._s3_bucket_name = s3_configs.get('BUCKET_NAME')
         self._prefix = s3_config_dict['S3_CONFIG']['PREFIX']
@@ -64,10 +65,12 @@ class DBConfig:
     def __init__(self, db_config_dict):
         if db_config_dict is None or len(db_config_dict) == 0:
             raise Exception("DB configs map passed is none or empty")
+        else:
+            print("DB configs map successfully loaded")
         self._db_host = db_config_dict.get('DB_HOST')
         self._db_port = db_config_dict.get('DB_PORT')
         self._db_name = db_config_dict.get('DB_NAME')
-        self._db_schemas = db_config_dict.get('DB_SCHEMAS')
+        self._db_schema = db_config_dict.get('DB_SCHEMA')
         self._db_user = db_config_dict.get('DB_USER')
         self._db_password = db_config_dict.get('DB_PASSWORD')
 
@@ -96,12 +99,12 @@ class DBConfig:
         self._db_name = value
 
     @property
-    def db_schemas(self):
-        return self._db_schemas
+    def db_schema(self):
+        return self._db_schema
 
-    @db_schemas.setter
-    def db_schemas(self, value):
-        self._db_schemas = value
+    @db_schema.setter
+    def db_schema(self, value):
+        self._db_schema = value
 
     @property
     def db_user(self):
@@ -132,7 +135,7 @@ def load_db_configs_in_dict() -> dict:
         'DB_HOST': os.getenv('DB_HOST'),
         'DB_PORT': os.getenv('DB_PORT'),
         'DB_NAME': os.getenv('DB_NAME'),
-        'DB_SCHEMAS': os.getenv('DB_SCHEMAS').split(','),
+        'DB_SCHEMA': os.getenv('DB_SCHEMA'),
         'DB_USER': os.getenv('DB_USER'),
         'DB_PASSWORD': os.getenv('DB_PASSWORD')
     }
