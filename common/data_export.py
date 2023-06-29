@@ -55,7 +55,7 @@ class ExtractAndLoad:
             cursor = self.__db_connection.cursor()
             schema_name = self.__db_config.db_schema
             for file in self.__s3_config.file_list:
-                table_name = file.split()[0]
+                table_name = file.split('.')[0]
                 print(f"creating table {schema_name}.{table_name} ")
                 cursor.execute(crate_staging_tables(schema_name=schema_name,
                                                     table_name=table_name))
@@ -78,7 +78,7 @@ class ExtractAndLoad:
                 cur.execute(truncate_sql)
                 with open(fully_qualified_file_name, 'r') as f:
                     cur.copy_expert(sql=copy_sql, file=f)
-                print(f"data for table {table_name} load successfully")
+                print(f"data for table {table_name} loaded successfully")
             self.__db_connection.commit()
             print("all data loaded successfully")
             cur.close()
