@@ -1,3 +1,1 @@
-{% set schema_name = 'patrojun6040_analytics' %}
-
-SELECT 'test'
+DROP TABLE IF EXISTS patrojun6040_analytics.best_performing_product;
