@@ -17,7 +17,7 @@ def crate_staging_tables(schema_name: str, table_name: str) -> str:
             order_id INT NOT NULL,
             customer_id INT NOT NULL,
             order_date DATE NOT NULL,
-            product_id VARCHAR(32) NOT NULL,
+            product_id INT NOT NULL,
             unit_price INT NOT NULL,
             quantity INT NOT NULL,
             total_price INT NOT NULL,
