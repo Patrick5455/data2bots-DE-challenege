@@ -1,32 +1,29 @@
-.PHONY: all, docker-build, docker-push, build, run, run-analytics, clean, deps, test, compile, refresh
+.PHONY: all, db, dp, build, run, run-analytics, clean, deps, test, compile, refresh
 
 #################################################################################
 # GLOBALS                                                                       #
 #################################################################################
-DOCKER_REPO = patrick5455/patrojun6040_dbt
-IMAGE = $(DOCKER_REPO):v1
-ENVIRONMENT = dev
-ENVS = -e ENV=$(ENVIRONMENT) \
--e POSTGRES_USER=${POSTGRES_USER} \
--e POSTGRESS_PASSWORD=${POSTGRESS_PASSWORD} \
--e POSTGRES_SCHEMA=${POSTGRES_SCHEMA}
-TEST_ENVS= -e ENV=test \
--e POSTGRES_USER=${POSTGRES_USER} \
--e POSTGRESS_PASSWORD=${POSTGRESS_PASSWORD} \
-VOLUMES = -v $(PWD)/data2bots-DE-challenge:/dbt --user 1000:1000
-PROFILES = --profiles-dir /dbt/profile --profile postgres-dwh
-VENV_DIR = env
-PIP = $(VENV_DIR)/bin/pip
+DOCKER_REPO=patrick5455/patrojun6040_dbt
+IMAGE=$(DOCKER_REPO):dbt-dags-v1
+ENVIRONMENT=dev
+ENVS= -e ENV=$(ENVIRONMENT) \
+-e DB_USER=${DB_USER} \
+-e DB_PASSWORD=${DB_PASSWORD}
+TEST_ENVS= -e ENV = test \
+-e DB_USER = ${DB_USER} \
+-e DB_PASSWORD = ${DB_PASSWORD}
+VOLUMES=-v $(PWD)/patrojun6040:/dbt --user 1000:1000
+PROFILES=--profiles-dir /dbt/profile --profile postgres-dwh
 #################################################################################
 # COMMANDS                                                                       #
 #################################################################################
 
-all: docker-build run
+all: db dp run
 
-docker-build:
+db:
 	docker build --no-cache -t $(IMAGE) .
 
-docker-push:
+dp:
 	docker push $(IMAGE)
 
 build: refresh

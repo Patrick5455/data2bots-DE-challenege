@@ -4,3 +4,4 @@ data2bots_elt/env
 data2bots_elt/csv_data/
 .env
 *__pycache__
+csv_data

@@ -157,3 +157,6 @@ def connect_to_postgres(db_config: DBConfig) -> connection:
     except Exception as db_error:
         print(f"something went wrong while trying to connect with "
               f"{db_config.db_name} DB", str(db_error))
+
+if __name__ == '__main__':
+    pass
