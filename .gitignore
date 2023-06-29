@@ -1,3 +1,5 @@
-!/.idea/
-!/env/
-!/.env
+.idea/
+env
+*.iml
+csv_data/
+.env
