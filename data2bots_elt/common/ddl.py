@@ -1,4 +1,3 @@
-
 def crate_staging_tables(schema_name: str, table_name: str) -> str:
     print(f"selecting query to create {table_name} table")
     if table_name == "reviews":
@@ -33,7 +32,6 @@ def crate_staging_tables(schema_name: str, table_name: str) -> str:
         """
 
     if table_name == "shipment_deliveries":
-
         return f"""
         CREATE TABLE IF NOT EXISTS {schema_name}.{table_name}  (
         shipment_id INT NOT NULL,

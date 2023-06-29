@@ -1,5 +1,6 @@
 .idea/
-env
+data2bots_elt/env
 *.iml
-csv_data/
+data2bots_elt/csv_data/
 .env
+*__pycache__

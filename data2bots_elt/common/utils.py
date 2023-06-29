@@ -1,10 +1,12 @@
-import psycopg2
-from psycopg2._psycopg import connection
-import yaml
 import os
-# from dotenv import load_dotenv
-#
-# load_dotenv()
+
+import psycopg2
+import yaml
+from psycopg2._psycopg import connection
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class S3Config:
