@@ -5,9 +5,8 @@ import boto3
 from botocore import UNSIGNED
 from botocore.client import Config
 
-from common.utils import *
 from common.dml import create_analytics_tables
-from psycopg2._psycopg import cursor
+from common.utils import *
 
 
 class TransformAndDump:
