@@ -41,7 +41,7 @@ class ExtractAndLoad:
                                     f'/{object_key.split("/")[0]}'
                     if key in self.__s3_config.file_list:
                         download_file_location = f"{download_path}/{key}"
-                        print(f"downloading {key} in {download_file_location}.")
+                        print(f"downloading {key} in {download_file_location}")
                         os.makedirs(
                             os.path.dirname(
                                 download_file_location), exist_ok=True)

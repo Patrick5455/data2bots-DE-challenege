@@ -31,19 +31,21 @@ class TransformAndDump:
         self.__warehouse_config = warehouse_config
         self.__db_connection = db_connection
 
-    def _write_query_result_to_s3(self, cur: cursor, key: str):
+    def _write_query_result_to_s3(self, data: list[str], key: str):
         try:
             s3 = boto3.client('s3',
                               region_name=self.__s3_config.s3_region,
                               config=Config(signature_version=UNSIGNED))
-            results = cur.fetchall()
-            csv_data = io.StringIO()
-            csv_writer = csv.writer(csv_data)
-            csv_writer.writerows(results)
-            s3.put_object(contents=csv_data.getvalue(),
-                          bucket_name=self.__s3_config.s3_bucket_name,
-                          key_name=key)
-            print(f"successfully stored object to {key} in s3")
+            if data:
+                csv_data = io.StringIO()
+                csv_writer = csv.writer(csv_data)
+                csv_writer.writerows(data)
+                s3.put_object(Body=csv_data.getvalue(),
+                              Bucket=self.__s3_config.s3_bucket_name,
+                              Key=key)
+                print(f"successfully stored object to {key} in s3")
+            else:
+                print("no data to write to s3 bucket")
         except Exception as e:
             print(f"error while exporting data to datalake: {e}")
 
@@ -62,7 +64,9 @@ class TransformAndDump:
                 key = '{file_location}/{file_name}'.format(
                     file_location=self.__s3_config.export_location,
                     file_name=f"{table_name}.csv")
-                self._write_query_result_to_s3(cur=cur, key=key)
+                fetch_data_query = f"SELECT * FROM {analytics_schema_name}.{table_name}"
+                cur.execute(fetch_data_query)
+                self._write_query_result_to_s3(data=cur.fetchall(), key=key)
                 print(f"query result successfully written to {key}")
             cur.close()
         except Exception as e:
