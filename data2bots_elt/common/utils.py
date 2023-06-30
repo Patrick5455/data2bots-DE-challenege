@@ -22,12 +22,14 @@ class S3Config:
             self._file_list = s3_config.get('FILE_LIST')
             self._download_path = s3_config.get('DOWNLOAD_PATH')
             self._s3_region = s3_config.get('S3_REGION')
+            self._export_location = s3_config.get('EXPORT_LOCATION')
         else:
             self._s3_bucket_name = s3_config_dict.get('BUCKET_NAME')
             self._prefix = s3_config_dict.get('PREFIX')
             self._file_list = s3_config_dict.get('FILE_LIST')
             self._download_path = s3_config_dict.get('DOWNLOAD_PATH')
             self._s3_region = s3_config_dict.get('S3_REGION')
+            self._export_location = s3_config_dict.get('EXPORT_LOCATION')
 
     @property
     def s3_bucket_name(self):
@@ -68,6 +70,14 @@ class S3Config:
     @s3_region.setter
     def s3_region(self, value):
         self._s3_region = value
+
+    @property
+    def export_location(self):
+        return self._export_location
+
+    @export_location.setter
+    def export_location(self, value):
+        self._export_location = value
 
 
 class WarehouseConfig:
@@ -209,4 +219,3 @@ def connect_to_postgres(db_config: DBConfig) -> connection:
     except Exception as db_error:
         print(f"something went wrong while trying to connect with "
               f"{db_config.db_name} DB", str(db_error))
-
