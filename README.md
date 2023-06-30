@@ -55,14 +55,17 @@ _AIRFLOW_WWW_USER_PASSWORD=airflow````
 6. Open a terminal and run the following command to build the Docker containers:
    ```bash
    docker-compose build
+   ```
 7. Once the containers are built, start the Airflow container by running:
    ```bash
    docker-compose up airflow-init
+   ```
 This will initialize the Airflow database and create the necessary tables.
 7. After the initialization is complete, start the Airflow scheduler and webserver:
 
    ```bash
    docker-compose up
+   ```
 This will start the Airflow scheduler and webserver as daemon processes.
 
 8. Access the Airflow UI by navigating to http://localhost:8080 in your web browser.
@@ -79,8 +82,9 @@ For a simple run of the project, after setting your .env config file at the proj
 
 At the root of data2bots_elt folder, run
 
-```python3 main.py```
-
+   ```bash
+   python3 main.py
+   ```
 ## Production-Grade Project Features
 The ELT project incorporates several production-grade features, including:
 
