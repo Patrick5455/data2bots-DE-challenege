@@ -5,8 +5,8 @@ import boto3
 from botocore import UNSIGNED
 from botocore.client import Config
 
-from common.dml import create_analytics_tables
-from common.utils import *
+from dags.common.dml import create_analytics_tables
+from dags.common.utils import *
 
 
 class TransformAndDump:
@@ -30,12 +30,12 @@ class TransformAndDump:
         self.__warehouse_config = warehouse_config
         self.__db_connection = db_connection
 
-    def _write_query_result_to_s3(self, data: list[str], key: str):
+    def _write_query_result_to_s3(self, key: str, data = None):
         try:
             s3 = boto3.client('s3',
                               region_name=self.__s3_config.s3_region,
                               config=Config(signature_version=UNSIGNED))
-            if data:
+            if data is not None:
                 csv_data = io.StringIO()
                 csv_writer = csv.writer(csv_data)
                 csv_writer.writerows(data)
