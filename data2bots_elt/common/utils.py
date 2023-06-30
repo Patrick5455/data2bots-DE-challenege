@@ -15,12 +15,19 @@ class S3Config:
             raise Exception("s3 configs map passed is none or empty")
         else:
             print("S3 configs map successfully loaded")
-        s3_configs = s3_config_dict.get('S3_CONFIG')
-        self._s3_bucket_name = s3_configs.get('BUCKET_NAME')
-        self._prefix = s3_config_dict['S3_CONFIG']['PREFIX']
-        self._file_list = s3_config_dict['S3_CONFIG']['FILE_LIST']
-        self._download_path = s3_config_dict['S3_CONFIG']['DOWNLOAD_PATH']
-        self._s3_region = s3_config_dict['S3_CONFIG']['S3_REGION']
+        if 'S3_CONFIG' in s3_config_dict:
+            s3_config = s3_config_dict.get('S3_CONFIG')
+            self._s3_bucket_name = s3_config.get('BUCKET_NAME')
+            self._prefix = s3_config.get('PREFIX')
+            self._file_list = s3_config.get('FILE_LIST')
+            self._download_path = s3_config.get('DOWNLOAD_PATH')
+            self._s3_region = s3_config.get('S3_REGION')
+        else:
+            self._s3_bucket_name = s3_config_dict.get('BUCKET_NAME')
+            self._prefix = s3_config_dict.get('PREFIX')
+            self._file_list = s3_config_dict.get('FILE_LIST')
+            self._download_path = s3_config_dict.get('DOWNLOAD_PATH')
+            self._s3_region = s3_config_dict.get('S3_REGION')
 
     @property
     def s3_bucket_name(self):
@@ -63,6 +70,37 @@ class S3Config:
         self._s3_region = value
 
 
+class WarehouseConfig:
+    def __init__(self, warehouse_config_dict: dict = None):
+        if warehouse_config_dict is None or len(warehouse_config_dict) == 0:
+            raise Exception("warehouse configs map passed is none or empty")
+        else:
+            print("warehouse configs map successfully loaded")
+        if 'WAREHOUSE_CONFIG' in warehouse_config_dict:
+            warehouse_config = warehouse_config_dict.get('WAREHOUSE_CONFIG')
+            self._staging_tables = warehouse_config.get('STAGING_TABLES')
+            self._analytics_tables = warehouse_config.get('ANALYTICS_TABLES')
+        else:
+            self._staging_tables = warehouse_config_dict.get('STAGING_TABLES')
+            self._analytics_tables = warehouse_config_dict.get('ANALYTICS_TABLES')
+
+    @property
+    def staging_tables(self):
+        return self._staging_tables
+
+    @staging_tables.setter
+    def staging_tables(self, value):
+        self._staging_tables = value
+
+    @property
+    def analytics_tables(self):
+        return self._analytics_tables
+
+    @analytics_tables.setter
+    def analytics_tables(self, value):
+        self._analytics_tables = value
+
+
 class DBConfig:
     def __init__(self, db_config_dict):
         if db_config_dict is None or len(db_config_dict) == 0:
@@ -72,7 +110,8 @@ class DBConfig:
         self._db_host = db_config_dict.get('DB_HOST')
         self._db_port = db_config_dict.get('DB_PORT')
         self._db_name = db_config_dict.get('DB_NAME')
-        self._db_schema = db_config_dict.get('DB_SCHEMA')
+        self._staging_db_schema = db_config_dict.get('STAGING_DB_SCHEMA')
+        self._analytics_db_schema = db_config_dict.get('ANALYTICS_DB_SCHEMA')
         self._db_user = db_config_dict.get('DB_USER')
         self._db_password = db_config_dict.get('DB_PASSWORD')
 
@@ -101,12 +140,20 @@ class DBConfig:
         self._db_name = value
 
     @property
-    def db_schema(self):
-        return self._db_schema
+    def staging_db_schema(self):
+        return self._staging_db_schema
 
-    @db_schema.setter
-    def db_schema(self, value):
-        self._db_schema = value
+    @staging_db_schema.setter
+    def staging_db_schema(self, value):
+        self._staging_db_schema = value
+
+    @property
+    def analytics_db_schema(self):
+        return self._analytics_db_schema
+
+    @analytics_db_schema.setter
+    def analytics_db_schema(self, value):
+        self._analytics_db_schema = value
 
     @property
     def db_user(self):
@@ -125,11 +172,15 @@ class DBConfig:
         self._db_password = value
 
 
-def yaml_configs_loader(config_file: str) -> dict:
+def yaml_configs_loader(config_file: str, parent_level: str = None) -> dict:
     with open(config_file, "r") as file:
         config_dict = yaml.safe_load(file)
-    print("successfully loaded yaml configs file into a map")
-    return config_dict
+    if parent_level is None:
+        print("successfully loaded yaml configs file into a map")
+        return config_dict
+    else:
+        print(f"successfully loaded yaml configs file at parent level {parent_level} into a map")
+        return config_dict[parent_level]
 
 
 def load_db_configs_in_dict() -> dict:
@@ -137,7 +188,8 @@ def load_db_configs_in_dict() -> dict:
         'DB_HOST': os.getenv('DB_HOST'),
         'DB_PORT': os.getenv('DB_PORT'),
         'DB_NAME': os.getenv('DB_NAME'),
-        'DB_SCHEMA': os.getenv('DB_SCHEMA'),
+        'STAGING_DB_SCHEMA': os.getenv('STAGING_DB_SCHEMA'),
+        'ANALYTICS_DB_SCHEMA': os.getenv('ANALYTICS_DB_SCHEMA'),
         'DB_USER': os.getenv('DB_USER'),
         'DB_PASSWORD': os.getenv('DB_PASSWORD')
     }
@@ -158,5 +210,3 @@ def connect_to_postgres(db_config: DBConfig) -> connection:
         print(f"something went wrong while trying to connect with "
               f"{db_config.db_name} DB", str(db_error))
 
-if __name__ == '__main__':
-    pass

@@ -1,6 +1,6 @@
-def crate_analytics_tables(staging_schema_name: str,
-                           analysis_schema_name: str,
-                           analysis_name: str) -> str:
+def create_analytics_tables(staging_schema_name: str,
+                            analysis_schema_name: str,
+                            analysis_name: str) -> str:
     print(f"selecting query to create {analysis_name} analysis")
 
     if analysis_name == "agg_public_holiday":

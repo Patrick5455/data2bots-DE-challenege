@@ -14,15 +14,17 @@ class ExtractAndLoad:
     def __init__(self,
                  s3_config: S3Config,
                  db_config: DBConfig,
+                 warehouse_config: WarehouseConfig,
                  db_connection: connection = None
                  ):
 
         if db_connection is None:
             raise Exception("database connecting is none")
 
-        self.__db_connection = db_connection
         self.__s3_config = s3_config
         self.__db_config = db_config
+        self.__warehouse_config = warehouse_config
+        self.__db_connection = db_connection
 
     def extract_from_datalake(self):
         try:
@@ -46,16 +48,14 @@ class ExtractAndLoad:
                         s3.download_file(self.__s3_config.s3_bucket_name,
                                          object_key,
                                          download_file_location)
-
         except Exception as e:
             print(f"error while exporting data from datalake: {e}")
 
     def _create_staging_tables_in_warehouse(self):
         try:
             cursor = self.__db_connection.cursor()
-            schema_name = self.__db_config.db_schema
-            for file in self.__s3_config.file_list:
-                table_name = file.split('.')[0]
+            schema_name = self.__db_config.staging_db_schema
+            for table_name in self.__warehouse_config.staging_tables:
                 print(f"creating table {schema_name}.{table_name} ")
                 cursor.execute(crate_staging_tables(schema_name=schema_name,
                                                     table_name=table_name))
@@ -68,12 +68,12 @@ class ExtractAndLoad:
         try:
             cur = self.__db_connection.cursor()
             parent_path = f"{self.__s3_config.download_path}/{self.__s3_config.prefix}"
-            for file_name in self.__s3_config.file_list:
-                table_name = f'{self.__db_config.db_schema}.{file_name.split(".")[0]}'
-                fully_qualified_file_name = f"{parent_path}/{file_name}"
+            for table_name in self.__warehouse_config.staging_tables:
+                schema_table_name = f'{self.__db_config.staging_db_schema}.{table_name}'
+                fully_qualified_file_name = f"{parent_path}/{table_name}.csv"
                 print(f"loading data from {fully_qualified_file_name}"
                       f" file to table {table_name}")
-                truncate_sql = f"TRUNCATE TABLE {table_name}"
+                truncate_sql = f"TRUNCATE TABLE {schema_table_name}"
                 copy_sql = f"COPY {table_name} FROM STDIN DELIMITER ',' CSV HEADER"
                 cur.execute(truncate_sql)
                 with open(fully_qualified_file_name, 'r') as f:
@@ -92,12 +92,3 @@ class ExtractAndLoad:
         self._load_staging_data_to_warehouse()
         self.__db_connection.close()
 
-
-if __name__ == '__main__':
-    s3_config_obj = S3Config(yaml_configs_loader("../configs.yaml"))
-    db_config_obj = DBConfig(load_db_configs_in_dict())
-    extract_and_load = ExtractAndLoad(
-        s3_config=s3_config_obj,
-        db_config=db_config_obj,
-        db_connection=connect_to_postgres(db_config_obj))
-    extract_and_load.export_and_load_job()

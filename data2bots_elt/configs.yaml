@@ -7,3 +7,13 @@ S3_CONFIG:
     - 'shipment_deliveries.csv'
   DOWNLOAD_PATH: '../csv_data'
   S3_REGION: 'eu-central-1'
+
+WAREHOUSE_CONFIG:
+  STAGING_TABLES:
+      - "reviews"
+      - "orders"
+      - 'shipment_deliveries'
+  ANALYTICS_TABLES:
+     - "agg_public_holiday"
+     - "agg_shipments"
+     - 'best_performing_product'
