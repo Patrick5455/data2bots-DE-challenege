@@ -3,6 +3,8 @@ import sys
 # sys.path.append('common')
 # sys.path.append('pipeline')
 # sys.path.append('../dbt-dags')
+from airflow.operators.empty import EmptyOperator
+
 print(f"sys.modules:{sys.modules}")
 from datetime import datetime
 from airflow import DAG
@@ -14,7 +16,9 @@ from pipeline.batch.data_transformation import TransformAndDump
 load_dotenv()
 
 
-YAML_CONFIG_PATH = "configs.yaml"
+dag_file_path = os.path.abspath(__file__)
+dag_directory = os.path.dirname(dag_file_path)
+YAML_CONFIG_PATH = os.path.join(dag_directory, 'configs.yaml')
 
 s3_config_obj = S3Config(yaml_configs_loader(config_file=YAML_CONFIG_PATH,
                                              parent_level='S3_CONFIG'))
@@ -66,4 +70,11 @@ task_transform_and_dump = PythonOperator(
     dag=dag
 )
 
+alert_on_finish = EmptyOperator(
+    task_id='send_email_and_slack_alert',
+    dag=dag
+)
+
+
+task_transform_and_dump.set_downstream(alert_on_finish)
 task_export_and_load.set_downstream(task_transform_and_dump)

@@ -17,35 +17,69 @@ The ELT project utilizes Airflow as the job orchestrator to manage scheduling an
 To run the ELT project, follow the steps below:
 
 1. Make sure Docker and Docker Compose are installed on your machine.
+2. create a .env file with the following configs:
+```
+# DB Config
+DB_HOST=34.89.230.185 
+DB_PORT=5432
+DB_NAME=d2b_accessment
+STAGING_DB_SCHEMA=patrojun6040_staging
+ANALYTICS_DB_SCHEMA=patrojun6040_analytics
+DB_USER=YOUR_DB_USER
+DB_PASSWORD=YOUR_DB_PASSWORD
 
-2. Clone the project repository to your local machine.
+# Meta-Database
+POSTGRES_USER=airflow
+POSTGRES_PASSWORD=airflow
+POSTGRES_DB=airflow
 
-3. Navigate to the root folder of the project, where the `docker-compose.yml` file is located.
+# Airflow Core
+AIRFLOW__CORE__FERNET_KEY=UKMzEm3yIuFYEq1y3-2FxPNWSVwRASpahmQ9kQfEr8E=
+AIRFLOW__CORE__EXECUTOR=LocalExecutor
+AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=True
+AIRFLOW__CORE__LOAD_EXAMPLES=False
+AIRFLOW_UID=0
 
-4. Open a terminal and run the following command to build the Docker containers:
+# Backend DB
+AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+AIRFLOW__DATABASE__LOAD_DEFAULT_CONNECTIONS=False
 
+# Airflow Init
+_AIRFLOW_DB_UPGRADE=True
+_AIRFLOW_WWW_USER_CREATE=True
+_AIRFLOW_WWW_USER_USERNAME=airflow
+_AIRFLOW_WWW_USER_PASSWORD=airflow````
+```
+4. Clone the project repository to your local machine.
+5. Navigate to the root folder of the project, where the `docker-compose.yml` file is located.
+6. Open a terminal and run the following command to build the Docker containers:
    ```bash
    docker-compose build
-
-5. Once the containers are built, start the Airflow container by running:
-
+7. Once the containers are built, start the Airflow container by running:
    ```bash
    docker-compose up airflow-init
 This will initialize the Airflow database and create the necessary tables.
-
-6. After the initialization is complete, start the Airflow scheduler and webserver:
+7. After the initialization is complete, start the Airflow scheduler and webserver:
 
    ```bash
    docker-compose up
 This will start the Airflow scheduler and webserver as daemon processes.
 
-7. Access the Airflow UI by navigating to http://localhost:8080 in your web browser.
+8. Access the Airflow UI by navigating to http://localhost:8080 in your web browser.
 
-8. In the Airflow UI, you can monitor and manage the DAGs (Directed Acyclic Graphs), which represent the workflow of your ELT project. The DAG responsible for the ELT pipeline (***batch_pipeline_dag.py***) should be visible.
+9. In the Airflow UI, you can monitor and manage the DAGs (Directed Acyclic Graphs), which represent the workflow of your ELT project. The DAG responsible for the ELT pipeline (***batch_pipeline_dag.py***) should be visible.
 
-9. Click on the DAG to view its details and enable it if necessary. You can also configure the scheduling interval to match your requirements.
+10. Click on the DAG to view its details and enable it if necessary. You can also configure the scheduling interval to match your requirements.
 
-10. Once the DAG is enabled, it will run according to the specified schedule, executing the steps of the ELT pipeline.
+11. Once the DAG is enabled, it will run according to the specified schedule, executing the steps of the ELT pipeline.
+
+### Simple Run
+
+For a simple run of the project, after setting your .env config file at the project root, 
+
+At the root of data2bots_elt folder, run
+
+```python3 main.py```
 
 ## Production-Grade Project Features
 The ELT project incorporates several production-grade features, including:

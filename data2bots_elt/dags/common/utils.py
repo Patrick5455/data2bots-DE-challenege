@@ -183,6 +183,7 @@ class DBConfig:
 
 
 def yaml_configs_loader(config_file: str, parent_level: str = None) -> dict:
+    print(f"config_file: {config_file}")
     with open(config_file, "r") as file:
         config_dict = yaml.safe_load(file)
     if parent_level is None:
