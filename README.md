@@ -76,6 +76,10 @@ This will start the Airflow scheduler and webserver as daemon processes.
 
 11. Once the DAG is enabled, it will run according to the specified schedule, executing the steps of the ELT pipeline.
 
+Below is an image of a successful run 
+
+![Successful DAG RUN](Successful Dag Run.png)
+
 ### Simple Run
 
 For a simple run of the project, after setting your .env config file at the project root, 
