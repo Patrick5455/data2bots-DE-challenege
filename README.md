@@ -19,7 +19,8 @@ The ELT project utilizes Airflow as the job orchestrator to manage scheduling an
 To run the ELT project, follow the steps below:
 
 1. Make sure Docker and Docker Compose are installed on your machine.
-2. create a .env file with the following configs:
+2. Clone the project repository to your local machine.2. 
+3. create a .env file with the following configs at the root of _data2bots_elt_ folder:
 ```
 #DB Config
 DB_HOST=34.89.230.185
@@ -54,13 +55,12 @@ _AIRFLOW_WWW_USER_CREATE=True
 _AIRFLOW_WWW_USER_USERNAME=airflow
 _AIRFLOW_WWW_USER_PASSWORD=airflow
 ```
-4. Clone the project repository to your local machine.
-5. Navigate to the root folder of the project, where the `docker-compose.yml` file is located.
-6. Open a terminal and run the following command to build the Docker containers:
+4. Navigate to the root folder of the project, where the `docker-compose.yml` file is located.
+5. Open a terminal and run the following command to build the Docker containers:
    ```bash
    docker-compose build
    ```
-7. Once the containers are built, start the Airflow container by running:
+6. Once the containers are built, start the Airflow container by running:
    ```bash
    docker-compose up
    ```
@@ -81,7 +81,7 @@ _AIRFLOW_WWW_USER_PASSWORD=airflow
 
 ### Simple Run
 
-For a simple run of the project, after setting your .env config file at the project root, 
+For a simple run of the project, after setting your .env config file at the _data2bots_elt_ folder root, 
 
 At the root of *__data2bots_elt/dags__* folder, 
 
@@ -115,7 +115,7 @@ The ELT project incorporates several production-grade features, including:
   - I could not have DBT connect to the postgres DB to use DBT as a transformation tool within the postgres DWH. Albeit, I still maintained the DBT setup as well as the transformation SQL queries in it
 - As an improvement
   - I would love to add an analytics dashboard that reads from the `patrojun6040_analytics` schema with some nice and interesting data visualization 
-  - Also, as an improvement on the production grade, I would manage airflow using a tool like astronomer or GCP managed Airflow, this way, I would be able to demonstrate my IAC skill and experience with Terraform. 
+  - Also, as an improvement on the production grade, I would manage Airflow using a tool like astronomer or GCP managed Airflow, this way, I would be able to demonstrate my **IAC skill and experience with Terraform**. 
 
 ## Suggestions and Contributions:
 - Shoot me an email [patrickojunde@gmail.com](mailto:patrickojunde@gmail.com)
