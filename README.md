@@ -75,7 +75,7 @@ _AIRFLOW_WWW_USER_PASSWORD=airflow
 
 **Below is an image of a successful run**
 
-![Successful DAG RUN](Successful Dag Run.png)
+![Successful DAG RUN](./Successful Dag Run.png)
 
 ### Simple Run
 
