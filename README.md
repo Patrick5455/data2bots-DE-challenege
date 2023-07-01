@@ -101,8 +101,17 @@ The ELT project incorporates several production-grade features, including:
 
 - Monitoring and Alerting: Airflow provides
 
+## Limitations and improvements
+- Due to limited time constraints, 
+  - I could not complete the slack/email notification task responsible for notifying respective group/person(s) of a successful DAG run or a failed dag run 
+- Due to DB permission issues, 
+  - I could not have DBT connect to the postgres DB to use DBT as a transformation tool within the postgres DWH. Albeit, I still maintained the DBT setup as well as the transformation SQL queries in it
+- As an improvement
+  - I would love to add an analytics dashboard that reads from the `patrojun6040_analytics` schema with some nice and interesting data visualization 
+  - Also, as an improvement on the production grade, I would manage airflow using a tool like astronomer or GCP managed Airflow, this way, I would be able to demonstrate my IAC skill and experience with Terraform. 
 
-
+## Suggestions and Contributions:
+- Shoot me an email [patrickojunde@gmail.com](mailto:patrickojunde@gmail.com)
 
 
 
