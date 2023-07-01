@@ -73,7 +73,7 @@ _AIRFLOW_WWW_USER_PASSWORD=airflow
 
 11. Once the DAG is enabled, it will run according to the specified schedule, executing the steps of the ELT pipeline.
 
-Below is an image of a successful run 
+**Below is an image of a successful run**
 
 ![Successful DAG RUN](Successful Dag Run.png)
 
