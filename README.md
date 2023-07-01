@@ -1,5 +1,7 @@
 # ELT Project
 
+![Successful DAG RUN](./Successful_Dag_Run.png)
+
 The ELT project is a batch processing pipeline designed to load data from a data lake into a PostgreSQL data warehouse. It performs transformations and executes analytics queries using SQL and psycopg2 to generate insights, and stores the results in the analytics schema of the data warehouse. Additionally, the transformed data is dumped back into the data lake.
 
 ## Project Overview
