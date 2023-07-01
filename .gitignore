@@ -4,7 +4,8 @@ data2bots_elt/env
 data2bots_elt/csv_data/
 .env
 *__pycache__
-data2bots_elt/dags/csv_data
+data2bots_elt/csv_data
+data2bots_elt/postgres-data
 data2bots_elt/config
 data2bots_elt/logs
 data2bots_elt/plugins

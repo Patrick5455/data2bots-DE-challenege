@@ -1,0 +1,15 @@
+alembic==1.11.1
+apache-airflow==2.6.2
+apache-airflow-providers-amazon==5.1.0
+boto3==1.17.39
+botocore==1.20.112
+dags==0.2.3
+dbt-core==1.5.2
+dbt-extractor==0.4.1
+dbt-postgres==1.5.2
+gunicorn==20.1.0
+Jinja2==3.1.2
+psycopg2-binary==2.9.6
+virtualenv==20.13.3
+python-dotenv==0.21.1
+

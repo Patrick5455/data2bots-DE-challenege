@@ -2,9 +2,8 @@ import boto3
 from botocore import UNSIGNED
 from botocore.client import Config
 
-from dags.common.ddl import crate_staging_tables
-from dags.common.utils import *
-
+from common.ddl import create_staging_tables
+from common.utils import *
 
 class ExtractAndLoad:
     """
@@ -57,8 +56,8 @@ class ExtractAndLoad:
             schema_name = self.__db_config.staging_db_schema
             for table_name in self.__warehouse_config.staging_tables:
                 print(f"creating table {schema_name}.{table_name} ")
-                cursor.execute(crate_staging_tables(schema_name=schema_name,
-                                                    table_name=table_name))
+                cursor.execute(create_staging_tables(schema_name=schema_name,
+                                                     table_name=table_name))
                 self.__db_connection.commit()
         except Exception as e:
             self.__db_connection.close()

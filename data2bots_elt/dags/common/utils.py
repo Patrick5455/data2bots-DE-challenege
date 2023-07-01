@@ -3,7 +3,6 @@ import os
 import psycopg2
 import yaml
 from psycopg2._psycopg import connection
-
 from dotenv import load_dotenv
 
 load_dotenv()

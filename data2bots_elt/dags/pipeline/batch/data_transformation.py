@@ -5,8 +5,8 @@ import boto3
 from botocore import UNSIGNED
 from botocore.client import Config
 
-from dags.common.dml import create_analytics_tables
-from dags.common.utils import *
+from common.dml import create_analytics_tables
+from common.utils import *
 
 
 class TransformAndDump:

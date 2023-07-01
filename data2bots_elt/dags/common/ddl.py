@@ -1,4 +1,4 @@
-def crate_staging_tables(schema_name: str, table_name: str) -> str:
+def create_staging_tables(schema_name: str, table_name: str) -> str:
     print(f"selecting query to create {table_name} table")
     if table_name == "reviews":
         return f"""
