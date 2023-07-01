@@ -60,15 +60,10 @@ _AIRFLOW_WWW_USER_PASSWORD=airflow
    ```
 7. Once the containers are built, start the Airflow container by running:
    ```bash
-   docker-compose up airflow-init
-   ```
-This will initialize the Airflow database and create the necessary tables.
-7. After the initialization is complete, start the Airflow scheduler and webserver:
-
-   ```bash
    docker-compose up
    ```
-This will start the Airflow scheduler and webserver as daemon processes.
+   - This will start the Airflow scheduler and webserver as daemon processes.
+
 
 8. Access the Airflow UI by navigating to http://localhost:8080 in your web browser.
 
