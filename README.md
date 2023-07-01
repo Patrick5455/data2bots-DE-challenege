@@ -19,15 +19,17 @@ To run the ELT project, follow the steps below:
 1. Make sure Docker and Docker Compose are installed on your machine.
 2. create a .env file with the following configs:
 ```
-# DB Config
-DB_HOST=34.89.230.185 
+#DB Config
+DB_HOST=34.89.230.185
 DB_PORT=5432
 DB_NAME=d2b_accessment
 STAGING_DB_SCHEMA=patrojun6040_staging
 ANALYTICS_DB_SCHEMA=patrojun6040_analytics
-DB_USER=YOUR_DB_USER
-DB_PASSWORD=YOUR_DB_PASSWORD
-
+DB_USER={YOUR_USER}
+DB_PASSWORD={YOUR_PASSWORD}
+ 
+NB: dno't include the {} when adding your user and password
+ 
 # Meta-Database
 POSTGRES_USER=airflow
 POSTGRES_PASSWORD=airflow
@@ -48,7 +50,7 @@ AIRFLOW__DATABASE__LOAD_DEFAULT_CONNECTIONS=False
 _AIRFLOW_DB_UPGRADE=True
 _AIRFLOW_WWW_USER_CREATE=True
 _AIRFLOW_WWW_USER_USERNAME=airflow
-_AIRFLOW_WWW_USER_PASSWORD=airflow````
+_AIRFLOW_WWW_USER_PASSWORD=airflow
 ```
 4. Clone the project repository to your local machine.
 5. Navigate to the root folder of the project, where the `docker-compose.yml` file is located.
