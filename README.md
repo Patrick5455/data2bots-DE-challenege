@@ -81,7 +81,9 @@ _AIRFLOW_WWW_USER_PASSWORD=airflow
 
 For a simple run of the project, after setting your .env config file at the project root, 
 
-At the root of data2bots_elt folder, run
+At the root of *__data2bots_elt/dags__* folder, 
+
+run
 
    ```bash
    python3 main.py
@@ -89,20 +91,23 @@ At the root of data2bots_elt folder, run
 ## Production-Grade Project Features
 The ELT project incorporates several production-grade features, including:
 
-- Containerization: The project is containerized using Docker, providing a consistent and isolated environment across different systems.
+- **Containerization**: 
+  - The project is containerized using Docker, providing a consistent and isolated environment across different systems.
 
-- Job Orchestration: Airflow is used as the job orchestrator, providing a reliable and scalable framework for managing and scheduling the ELT pipeline.
+- **Job Orchestration**: 
+  - Airflow is used as the job orchestrator, providing a reliable and scalable framework for managing and scheduling the ELT pipeline.
 
-- Version Control: The project code and configurations are stored in a Git repository, enabling version control and collaboration among team members.
+- **Version Control**: 
+  - The project code and configurations are stored in a Git repository, enabling version control and collaboration among team members.
 
-- Modular Design: The project is structured into separate modules for different functionalities, such as staging, transformations, and dumping results. This promotes code reusability, maintainability, and ease of testing.
+- **Modular Design**: 
+  - The project is structured into separate modules for different functionalities, such as staging, transformations, and dumping results. This promotes code reusability, maintainability, and ease of testing.
 
-- Scalability: With Docker and Airflow, the project can be scaled horizontally by adding more workers to handle increased data volumes or processing requirements.
-
-- Monitoring and Alerting: Airflow provides
-
+- **Scalability**: 
+  - With Docker and Airflow, the project can be scaled horizontally by adding more workers to handle increased data volumes or processing requirements.
+  
 ## Limitations and improvements
-- Due to limited time constraints, 
+- Due to limited time constraints, I could not provide a monitoring and alerting feature
   - I could not complete the slack/email notification task responsible for notifying respective group/person(s) of a successful DAG run or a failed dag run 
 - Due to DB permission issues, 
   - I could not have DBT connect to the postgres DB to use DBT as a transformation tool within the postgres DWH. Albeit, I still maintained the DBT setup as well as the transformation SQL queries in it
